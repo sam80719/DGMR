@@ -1,0 +1,51 @@
+version: "3"
+services:
+  mysql:
+    container_name: mysql
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_TCP_PORT: 3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+  phpMyAdmin:
+    container_name: phpmyadmin
+    image: phpmyadmin
+    restart: always
+    ports:
+      - '8080:80'
+    environment:
+      - PMA_HOST=mysql
+  go:
+    image: golang:${GO_VERSION}-alpine${ALPINE_VERSION}
+    ports:
+      - "${GO_PORT}:8088"
+    expose:
+      - 8808
+    volumes:
+      - .:/go/src/app
+    restart: always
+    cap_add:
+      - SYS_PTRACE
+    networks:
+      - default
+    tty: true
+    environment:
+      GOPROXY: ${GO_PROXY}
+      TZ: "$TZ"
+    depends_on:
+      - mysql
+  redis:
+    image: redis:${REDIS_VERSION}
+    ports:
+      - "${REDIS_HOST_PORT}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - default
+volumes:
+  mysql-data:
+  redis_data:
+networks:
+  default:
