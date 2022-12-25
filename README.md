@@ -45,6 +45,10 @@ ifconfig docker0
 docker exec -it {$CONTAINER ID} /bin/sh
 ```
 
+### 網頁phpMyAdmin網址
+```shell
+http://localhost:8080/
+```
 
 ## 使用log
 Log文件生成的位置依赖于conf下各log配置的值。
